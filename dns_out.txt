@@ -1,0 +1,18 @@
+
+;
+;  Zone:    kocpa.com
+;  Server:  PLATINDNS2
+;  Time:    Tue Feb 03 09:28:42 2015 UTC
+;
+@ 3600 A  31.169.85.237
+     3600 NS  ns8.platinbox.com.
+     3600 NS  ns7.platinbox.com.
+     3600 SOA ns7.platinbox.com. hostmaster. 16 7200 1800 1209600 300
+     3600 MX  10 mx.yandex.net.
+mail._domainkey 3600 TXT    v=DKIM1; k=rsa; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrqpmrhAU9Swk+dIZNczsUU6856pA2D6D2AtvhL9zVBExLirZs+2Z8kjZdllHPnRqTUhzLhk7JFC5lkE9OkqZYm+hMixgzBMEEvxHyg/zaH9mbBJSsZQvtMRCLLsXvJFrjBLwWPrAPN2IELcmNxG1h0ExQ/qhTIrIRl7a4BOIG7QIDAQAB
+mail 3600 CNAME mail.yandex.com.tr.
+www 3600 CNAME  kocpa.com.
+
+;
+;  Finished zone: 6 nodes and 8 records in 0 seconds
+;
