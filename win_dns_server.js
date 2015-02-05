@@ -3,6 +3,7 @@
   * DnsCmd Execute File
   */
 var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
+    dnsoutFolder = "C:\\Windows\\System32\\dns\\dns-out.txt",
     notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
 
 /**
@@ -54,7 +55,7 @@ module.exports.zone = function(req, res, next, args) {
     function (error, stdout, stderr){
       if (error) return res.status(500).end(JSON.stringfy(error));
       if (stderr || stdout.indexOf(notFound) > 0) return res.status(404).end('Zone not found!');
-      return res.json(require('dns-zonefile').parse(stdout.toString()));
+      return res.json(require('dns-zonefile').parse(require('fs').readFileSync(dnsoutFolder, 'utf8').toString()));
     }
   );
 };
