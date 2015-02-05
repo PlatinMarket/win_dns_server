@@ -1,6 +1,6 @@
 
 module.exports.index = function(req, res, next, args) {
-  res.end('Iam Here Bossdadad');
+  res.end('Iam Here Boss');
 };
 
 module.exports.sd = function(req, res, next, args) {
