@@ -10,7 +10,7 @@ var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
   * Check Dns Service Command
   */
 module.exports._before = function(req, res, next, args) {
-  if (!require('fs').existsSync(dnscmd)) return res.status(500).end("dnscmd.exe not found!");
+  //if (!require('fs').existsSync(dnscmd)) return res.status(500).end("dnscmd.exe not found!");
   next();
 };
 
@@ -58,6 +58,7 @@ module.exports.zone = function(req, res, next, args) {
       stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
       stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
       stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
+      stdout = stdout.toString().replace(/TXT\t\t/, "TXT\t\t\"").replace(/(.*TXT\t\t.*)(\r\n.*)/, "$1\"$2");
       return res.json(require('dns-zonefile').parse(stdout));
     }
   );
@@ -65,7 +66,10 @@ module.exports.zone = function(req, res, next, args) {
 
 module.exports.sd = function(req, res, next, args) {
   var zonefile = require('dns-zonefile');
-  var text = require('fs').readFileSync(global.path('/rpc_modules/win_dns_server/dns_out.txt', 'utf8'));
-  output = zonefile.parse(text.toString());
+  var stdout = require('fs').readFileSync(global.path('/rpc_modules/win_dns_server/dns_out.txt', 'utf8'));
+  stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
+  stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
+  stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
+  output = zonefile.parse(stdout.toString());
   res.json(output);
 };
