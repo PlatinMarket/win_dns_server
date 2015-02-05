@@ -2,7 +2,8 @@
 /**
   * DnsCmd Execute File
   */
-var dnscmd = "C:\\Windows\\System32\\dnscmd.exe";
+var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
+    notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
 
 /**
   * Check Dns Service Command
@@ -52,7 +53,7 @@ module.exports.zone = function(req, res, next, args) {
   global.execute(dnscmd, ["/ZonePrint", req.body['zone']], {},
     function (error, stdout, stderr){
       if (error) return res.status(500).end(JSON.stringfy(error));
-      if (stderr) return res.status(500).end('Zone not found!');
+      if (stderr || stdout.indexOf(notFound) > 0) return res.status(500).end('Zone not found!');
       return res.json(require('dns-zonefile').parse(stdout.toString()));
     }
   );
