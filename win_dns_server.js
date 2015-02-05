@@ -25,7 +25,7 @@ module.exports.zones = function(req, res, next, args) {
       for (var i in zones) {
         if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (up_shift + 3)].trim().slice(0, 9) == "Zone name") {
           up_shift = up_shift + 1;
-          out.push(zones[i].replace(/ .*/gi, ""));
+          out.push(zones[i].trim().replace(/ .*/gi, ""));
         }
       }
       return res.status(200).end(out.join("\r\n"));
