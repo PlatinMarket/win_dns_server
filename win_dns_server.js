@@ -55,7 +55,10 @@ module.exports.zone = function(req, res, next, args) {
     function (error, stdout, stderr){
       if (error) return res.status(500).end(JSON.stringfy(error));
       if (stderr || stdout.indexOf(notFound) > 0) return res.status(404).end('Zone not found!');
-      return res.json(require('dns-zonefile').parse(stdout.toString().replace(/\r\n\t\t/gi, "\r\n@")));
+      stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
+      stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
+      stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
+      return res.json(require('dns-zonefile').parse(stdout));
     }
   );
 };
