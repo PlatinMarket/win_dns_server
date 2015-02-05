@@ -1,8 +1,6 @@
 
 module.exports.index = function(req, res, next, args) {
-  global.db.server.find("servers", function(err, result){
-    res.json(result);
-  });
+  res.end('Iam Here Boss');
 };
 
 module.exports.sd = function(req, res, next, args) {
