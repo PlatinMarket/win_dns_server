@@ -1,6 +1,6 @@
 
 module.exports.index = function(req, res, next, args) {
-  res.end('oldu oldıu');
+  res.end('Dns Server Control');
 };
 
 module.exports.sd = function(req, res, next, args) {
