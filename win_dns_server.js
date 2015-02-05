@@ -7,6 +7,14 @@ var dnscmd = "C:\\Windows\\System32\\dnscmd.exe";
 /**
   * Service Status
   */
+module.exports._before = function(req, res, next, args) {
+  if (!require('fs').existsSync(dnscmd)) return res.status(500).end("dnscmd.exe not found!");
+  next();
+};
+
+/**
+  * Service Status
+  */
 module.exports.index = function(req, res, next, args) {
   res.end('Dns Server Control');
 };
@@ -30,7 +38,7 @@ module.exports.zones = function(req, res, next, args) {
           out.push(zones[i].trim().replace(/ .*/gi, ""));
         }
       }
-      
+
       return res.json(out);
     }
   );
