@@ -59,18 +59,8 @@ module.exports.zone = function(req, res, next, args) {
       stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
       stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
       stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"|$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
-      console.log(stdout);
-      return res.json(require('dns-zonefile').parse(stdout));
+      stdout = stdout.toString().replace(/\r\n/gi, "\n");
+      return res.json(require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
     }
   );
-};
-
-module.exports.sd = function(req, res, next, args) {
-  var zonefile = require('dns-zonefile');
-  var stdout = require('fs').readFileSync(global.path('/rpc_modules/win_dns_server/dns_out.txt', 'utf8'));
-  stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
-  stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
-  stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
-  output = zonefile.parse(stdout.toString());
-  res.json(output);
 };

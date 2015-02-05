@@ -9,6 +9,5 @@
   },
   "main": "dns.js",
   "dependencies": {
-    "dns-zonefile": "x"
   }
 }
