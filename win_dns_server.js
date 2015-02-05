@@ -15,7 +15,7 @@ module.exports.index = function(req, res, next, args) {
   * List Of Dns Zones
   */
 module.exports.zones = function(req, res, next, args) {
-  global.execute(dnscmd, ["/aaaa"], {},
+  global.execute(dnscmd, ["/EnumZones"], {},
     function (error, stdout, stderr){
       
       if (error) return res.status(500).end(JSON.stringfy(error));
@@ -30,7 +30,7 @@ module.exports.zones = function(req, res, next, args) {
           out.push(zones[i].trim().replace(/ .*/gi, ""));
         }
       }
-
+      
       return res.json(out);
     }
   );
