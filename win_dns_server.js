@@ -1,6 +1,20 @@
 
+var dnscmd = "C:\\Windows\\System32\\dnscmd.exe";
+
+/**
+  * List Of Dns Zones
+  */
 module.exports.index = function(req, res, next, args) {
   res.end('Dns Server Control');
+};
+
+module.exports.zones = function(req, res, next, args) {
+  global.execute(dnscmd, ["/EnumZones"], {},
+    function (error, stdout, stderr){
+      if (error) return res.status(500).end(JSON.stringfy(error));
+      return res.status(200).end(stdout);
+    }
+  );
 };
 
 module.exports.sd = function(req, res, next, args) {
