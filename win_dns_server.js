@@ -21,11 +21,11 @@ module.exports.zones = function(req, res, next, args) {
       var zones = stdout.toString().split("\r\n");
       
       var out = [];
-      var start = 0;
+      var up_shift = 0;
       for (var i in zones) {
-        if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (start + 3)].trim().slice(0, 9) == "Zone name") {
-          start = start + 1;
-          out.push(zones[i]);
+        if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (up_shift + 3)].trim().slice(0, 9) == "Zone name") {
+          up_shift = up_shift + 1;
+          out.push(zones[i].replace(/ .*/gi, ""));
         }
       }
       return res.status(200).end(out.join("\r\n"));
