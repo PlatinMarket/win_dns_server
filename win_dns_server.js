@@ -23,12 +23,12 @@ module.exports.zones = function(req, res, next, args) {
       var out = [];
       var start = 0;
       for (var i in zones) {
-        if (i > 2 && zones[i - (start + 3)].trim().slice(0, 9) == "Zone name") {
+        if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (start + 3)].trim().slice(0, 9) == "Zone name") {
           start = start + 1;
           out.push(zones[i]);
         }
       }
-      return res.status(200).end(out.join(","));
+      return res.status(200).end(out.join("\r\n"));
     }
   );
 };
