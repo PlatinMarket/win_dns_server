@@ -1,6 +1,6 @@
 
 module.exports.index = function(req, res, next, args) {
-  res.end('Denemeasdad');
+  res.end('Rerere rarara GSGS Şampiyon');
 };
 
 module.exports.sd = function(req, res, next, args) {
