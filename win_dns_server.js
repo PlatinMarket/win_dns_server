@@ -58,8 +58,7 @@ module.exports.zone = function(req, res, next, args) {
       stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
       stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
       stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
-      stdout = stdout.toString().replace(/TXT\t\t/, "TXT\t\t\"|").replace(/(.*TXT\t\t.*)(\r\n.*)/, "$1\"$2");
-      global.log(stdout);
+      stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"|$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
       return res.json(require('dns-zonefile').parse(stdout));
     }
   );
