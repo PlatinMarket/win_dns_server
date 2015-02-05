@@ -28,7 +28,7 @@ module.exports.zones = function(req, res, next, args) {
           out.push(zones[i].trim().replace(/ .*/gi, ""));
         }
       }
-      return res.status(200).end(out.join("\r\n"));
+      return res.json(out);
     }
   );
 };
