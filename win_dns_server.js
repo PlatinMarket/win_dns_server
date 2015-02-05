@@ -58,7 +58,7 @@ module.exports.zone = function(req, res, next, args) {
       stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
       stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
       stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
-      stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"|$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
+      stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
       stdout = stdout.toString().replace(/\r\n/gi, "\n");
       return res.json(require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
     }
