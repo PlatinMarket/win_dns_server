@@ -158,7 +158,7 @@ module.exports.read = function(req, res, next, args) {
   if (type && types.indexOf(req.body['type'].toUpperCase()) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
   DnsCmd.Records(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
-    if (type && records.hasOwnProperty(type.toLocaleLowerCase())) return records[type.toLocaleLowerCase()];
+    if (type && records.hasOwnProperty(type.toLocaleLowerCase())) return res.json(records[type.toLocaleLowerCase()]);
     if (type && !records.hasOwnProperty(type.toLocaleLowerCase())) return res.status(404).end(type + ' record not found!');
     return res.json(records);
   });
