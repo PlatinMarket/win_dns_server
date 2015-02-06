@@ -119,7 +119,7 @@ module.exports._before = function(req, res, next, args) {
   */
 module.exports.index = function(req, res, next, args) {
   DnsCmd.Zones(function(error, zones){
-    if (error) return res.status(500).end(JSON.stringfy(error));
+    if (error) return res.status(500).end(JSON.stringify(error));
     return res.json(zones);
   });
 };
@@ -130,7 +130,7 @@ module.exports.index = function(req, res, next, args) {
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   DnsCmd.Records(req.body['zone'], function(error, records){
-    if (error) return res.status(500).end(JSON.stringfy(error));
+    if (error) return res.status(500).end(JSON.stringify(error));
     return res.json(records);
   });
 };
@@ -141,7 +141,7 @@ module.exports.read = function(req, res, next, args) {
 module.exports.create = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   DnsCmd.Create(req.body['zone'], function(error, records){
-    if (error) return res.status(500).end(JSON.stringfy(error));
+    if (error) return res.status(500).end(JSON.stringify(error));
     return res.json(records);
   });
 };
