@@ -1,11 +1,12 @@
 
+var types = ['SOA', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
+
 /**
   * DnsCmd Controller
   */
 var DnsCmd = new (function DnsCmd(){
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
-      filter = ['TrustAnchors'],
-      types = ['SOA', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
+      filter = ['TrustAnchors'];
 
   var STDERR = {
     "ZONE_EXISTS": "DNS_ERROR_ZONE_ALREADY_EXISTS",
