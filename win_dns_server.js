@@ -1,5 +1,5 @@
 
-var types = ['SOA', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
+var types = ['SOA', 'NS', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
 
 /**
   * DnsCmd Controller
