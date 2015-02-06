@@ -4,7 +4,8 @@
   */
 var DnsCmd = new (function DnsCmd(){
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
-      notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
+      notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST",
+      filter = ['TrustAnchors'];
 
   /**
     * Test Whole Object
@@ -34,6 +35,8 @@ var DnsCmd = new (function DnsCmd(){
             out.push(zones[i].trim().replace(/ .*/gi, ""));
           }
         }
+
+        out = global.underscore.filter(out, function(zone) { return filter.indexOf(zone) === -1; });
 
         callback(undefined, out);
       }
