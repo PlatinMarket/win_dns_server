@@ -4,8 +4,12 @@
   */
 var DnsCmd = new (function DnsCmd(){
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
-      notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST",
       filter = ['TrustAnchors'];
+
+  var STDERR = {
+    "ZONE_EXISTS": "DNS_ERROR_ZONE_ALREADY_EXISTS",
+    "NOT_FOUND": "DNS_ERROR_ZONE_DOES_NOT_EXIST"
+  };
 
   /**
     * Test Whole Object
@@ -69,7 +73,7 @@ var DnsCmd = new (function DnsCmd(){
     global.execute(dnscmd, ["/ZonePrint", name], {},
       function (error, stdout, stderr){
         if (error) return callback(error, undefined);
-        if (stderr || stdout.indexOf(notFound) > 0) return callback(undefined, null);
+        if (stderr || stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(undefined, null);
         stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
         stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
         stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
@@ -88,10 +92,11 @@ var DnsCmd = new (function DnsCmd(){
     * @return Error, object<Zone>
     */
   this.Create = function(name, callback){
-    global.execute(dnscmd, ["/EnumZones"], {},
+    global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
         if (error) return callback(error, undefined);
-
+        if (stderr || stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
+        this.Records(name, callback);
       }
     );
   };
