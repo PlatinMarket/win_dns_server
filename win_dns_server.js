@@ -95,9 +95,10 @@ var DnsCmd = new (function DnsCmd(){
     var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
-        if (stderr || (stdout && stdout.indexOf(STDERR.ZONE_EXISTS) > 0)) return callback(new Error("Zone '" + name + "' already exists"), undefined);
+        if (stdout && stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
+        if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
-        _dnsCmd.Records(name, function(){ callback.apply(_dnsCmd, arguments); });
+        _dnsCmd.Records(name, callback);
       }
     );
   };
@@ -119,7 +120,7 @@ module.exports._before = function(req, res, next, args) {
   */
 module.exports.index = function(req, res, next, args) {
   DnsCmd.Zones(function(error, zones){
-    if (error) return res.status(500).end(JSON.stringify(error));
+    if (error) return res.status(500).end(error.message);
     return res.json(zones);
   });
 };
@@ -130,7 +131,7 @@ module.exports.index = function(req, res, next, args) {
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   DnsCmd.Records(req.body['zone'], function(error, records){
-    if (error) return res.status(500).end(JSON.stringify(error));
+    if (error) return res.status(500).end(error.message);
     return res.json(records);
   });
 };
@@ -141,7 +142,7 @@ module.exports.read = function(req, res, next, args) {
 module.exports.create = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   DnsCmd.Create(req.body['zone'], function(error, records){
-    if (error) return res.status(500).end(JSON.stringify(error));
+    if (error) return res.status(500).end(error.message);
     return res.json(records);
   });
 };
