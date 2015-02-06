@@ -120,7 +120,7 @@ module.exports.index = function(req, res, next, args) {
   */
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
-  DnsCmd.Records(function(error, records){
+  DnsCmd.Records(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(JSON.stringfy(error));
     return res.json(records);
   });
