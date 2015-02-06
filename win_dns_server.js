@@ -50,7 +50,7 @@ module.exports.zones = function(req, res, next, args) {
   * Get Zone Info
   */
 module.exports.zone = function(req, res, next, args) {
-  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('zone excepted');
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   global.execute(dnscmd, ["/ZonePrint", req.body['zone']], {},
     function (error, stdout, stderr){
       if (error) return res.status(500).end(JSON.stringfy(error));
