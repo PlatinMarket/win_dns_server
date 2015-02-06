@@ -92,11 +92,12 @@ var DnsCmd = new (function DnsCmd(){
     * @return Error, object<Zone>
     */
   this.Create = function(name, callback){
+    var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
         if (error) return callback(error, undefined);
         if (stderr || stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
-        this.Records(name, callback);
+        _dnsCmd.Records(name, function(){ callback.apply(_dnsCmd, arguments); });
       }
     );
   };
