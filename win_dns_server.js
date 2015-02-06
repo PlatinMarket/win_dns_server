@@ -2,7 +2,7 @@
 /**
   * DnsCmd Controller
   */
-var DnsCmd = new (function DnsCmd(dnscmd, ){
+var DnsCmd = new (function DnsCmd(){
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
       notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
 
@@ -80,7 +80,7 @@ var DnsCmd = new (function DnsCmd(dnscmd, ){
     global.execute(dnscmd, ["/EnumZones"], {},
       function (error, stdout, stderr){
         if (error) return callback(error, undefined);
-        
+
       }
     );
   };
