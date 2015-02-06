@@ -133,3 +133,14 @@ module.exports.read = function(req, res, next, args) {
     return res.json(records);
   });
 };
+
+/**
+  * Create Zone New Zone
+  */
+module.exports.create = function(req, res, next, args) {
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  DnsCmd.Create(req.body['zone'], function(error, records){
+    if (error) return res.status(500).end(JSON.stringfy(error));
+    return res.json(records);
+  });
+};
