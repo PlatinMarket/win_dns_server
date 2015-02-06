@@ -95,7 +95,7 @@ var DnsCmd = new (function DnsCmd(){
     var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
-        if (error) return callback(error, stderr);
+        if (error) return callback(error, "from create");
         if (stderr || stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
         _dnsCmd.Records(name, function(){ callback.apply(_dnsCmd, arguments); });
       }
