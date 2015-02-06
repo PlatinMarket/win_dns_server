@@ -4,7 +4,8 @@
   */
 var DnsCmd = new (function DnsCmd(){
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
-      filter = ['TrustAnchors'];
+      filter = ['TrustAnchors'],
+      types = ['SOA', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
 
   var STDERR = {
     "ZONE_EXISTS": "DNS_ERROR_ZONE_ALREADY_EXISTS",
@@ -152,8 +153,12 @@ module.exports.index = function(req, res, next, args) {
   */
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  var type = req.body.hasOwnProperty('type') ? req.body['type'].toUpperCase() : undefined;
+  if (type && types.indexOf(req.body['type'].toUpperCase()) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
   DnsCmd.Records(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
+    if (type && records.hasOwnProperty(type.toLocaleLowerCase())) return records[type.toLocaleLowerCase()];
+    if (type && !records.hasOwnProperty(type.toLocaleLowerCase())) return res.status(404).end(type + ' record not found!');
     return res.json(records);
   });
 };
