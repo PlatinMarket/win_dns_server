@@ -1,28 +1,91 @@
 
 /**
-  * DnsCmd Execute File
+  * DnsCmd Controller
   */
-var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
-    dnsoutFolder = "C:\\Windows\\System32\\dns\\dns-out.txt",
-    notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
+var DnsCmd = new (function DnsCmd(dnscmd, ){
+  var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
+      notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
 
-var Zones = function Zones(callback){
-  global.execute(dnscmd, ["/EnumZones"], {},
-    function (error, stdout, stderr){
-      if (error) return callback(error, undefined);
-      var zones = stdout.toString().split("\r\n"),
-          out = [],
-          up_shift = 0;
-      for (var i in zones) {
-        if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (up_shift + 3)].trim().slice(0, 9) == "Zone name") {
-          up_shift = up_shift + 1;
-          out.push(zones[i].trim().replace(/ .*/gi, ""));
+  /**
+    * List Of Zones
+    *
+    * @return Error, array<ZoneName>
+    */    
+  this.Zones = function (callback){
+    global.execute(dnscmd, ["/EnumZones"], {},
+      function (error, stdout, stderr){
+        if (error) return callback(error, undefined);
+
+        var zones = stdout.toString().split("\r\n"),
+            out = [],
+            up_shift = 0;
+
+        for (var i in zones) {
+          if (i > 2 && zones[i].slice(0, 1) == " " && zones[i - (up_shift + 3)].trim().slice(0, 9) == "Zone name") {
+            up_shift = up_shift + 1;
+            out.push(zones[i].trim().replace(/ .*/gi, ""));
+          }
         }
+
+        callback(undefined, out);
       }
-      callback(undefined, out);
-    }
-  )
-};
+    );
+  };
+
+  /**
+    * Check Zone Exists
+    *
+    * @param name string
+    * @param callback function
+    * @return Error, bool
+    */
+  this.Exists = function(name, callback) {
+    this.Records(name, function(error, zone){
+      if (error) return callback(error, undefined);
+      if (zone == null) return callback(undefined, false);
+      callback(undefined, true);
+    });
+  };
+
+  /**
+    * Get Zone Records
+    *
+    * @param name string
+    * @param callback function
+    * @return Error, object<Zone>
+    */
+  this.Records = function(name, callback) {
+    global.execute(dnscmd, ["/ZonePrint", name], {},
+      function (error, stdout, stderr){
+        if (error) return callback(error, undefined);
+        if (stderr || stdout.indexOf(notFound) > 0) return callback(undefined, null);
+        stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
+        stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
+        stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
+        stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
+        stdout = stdout.toString().replace(/\r\n/gi, "\n");
+        return callback(undefined, require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
+      }
+    );
+  };
+
+  /**
+    * Create New Zone
+    *
+    * @param name string
+    * @param callback function
+    * @return Error, object<Zone>
+    */
+  this.Create = function(name, callback){
+    global.execute(dnscmd, ["/EnumZones"], {},
+      function (error, stdout, stderr){
+        if (error) return callback(error, undefined);
+        
+      }
+    );
+  };
+
+});
 
 /**
   * Check Dns Service Command
@@ -36,8 +99,8 @@ module.exports._before = function(req, res, next, args) {
   * List Of Dns Zones
   */
 module.exports.index = function(req, res, next, args) {
-  Zones(function(err, zones){
-    if (err) return res.status(500).end(JSON.stringfy(err));
+  DnsCmd.Zones(function(error, zones){
+    if (error) return res.status(500).end(JSON.stringfy(error));
     return res.json(zones);
   });
 };
@@ -47,35 +110,8 @@ module.exports.index = function(req, res, next, args) {
   */
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
-  global.execute(dnscmd, ["/ZonePrint", req.body['zone']], {},
-    function (error, stdout, stderr){
-      if (error) return res.status(500).end(JSON.stringfy(error));
-      if (stderr || stdout.indexOf(notFound) > 0) return res.status(404).end('Zone not found!');
-      stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
-      stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
-      stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
-      stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
-      stdout = stdout.toString().replace(/\r\n/gi, "\n");
-      return res.json(require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
-    }
-  );
-};
-
-/**
-  * Add Zone
-  */
-module.exports.create_zone = function(req, res, next, args) {
-  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
-  global.execute(dnscmd, ["/ZonePrint", req.body['zone']], {},
-    function (error, stdout, stderr){
-      if (error) return res.status(500).end(JSON.stringfy(error));
-      if (stderr || stdout.indexOf(notFound) > 0) return res.status(404).end('Zone not found!');
-      stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
-      stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
-      stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
-      stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
-      stdout = stdout.toString().replace(/\r\n/gi, "\n");
-      return res.json(require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
-    }
-  );
+  DnsCmd.Records(function(error, records){
+    if (error) return res.status(500).end(JSON.stringfy(error));
+    return res.json(records);
+  });
 };
