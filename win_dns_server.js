@@ -95,7 +95,7 @@ var DnsCmd = new (function DnsCmd(){
     var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
-        if (error) return callback(error, undefined);
+        if (error) return callback(error, stderr);
         if (stderr || stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
         _dnsCmd.Records(name, function(){ callback.apply(_dnsCmd, arguments); });
       }
@@ -141,7 +141,7 @@ module.exports.read = function(req, res, next, args) {
 module.exports.create = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
   DnsCmd.Create(req.body['zone'], function(error, records){
-    if (error) return res.status(500).end(JSON.stringify(error));
+    if (error) return res.status(500).end(JSON.stringify(records));
     return res.json(records);
   });
 };
