@@ -72,8 +72,10 @@ var DnsCmd = new (function DnsCmd(){
   this.Records = function(name, callback) {
     global.execute(dnscmd, ["/ZonePrint", name], {},
       function (error, stdout, stderr){
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), null);
+        if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
-        if (stderr || stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(undefined, null);
+
         stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
         stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
         stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
@@ -98,7 +100,27 @@ var DnsCmd = new (function DnsCmd(){
         if (stdout && stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
         if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
+
         _dnsCmd.Records(name, callback);
+      }
+    );
+  };
+
+  /**
+    * Delete Zone
+    *
+    * @param name string
+    * @param callback function
+    * @return Error, object<Zone>
+    */
+  this.Delete = function(name, callback){
+    var _dnsCmd = this;
+    global.execute(dnscmd, ["/ZoneDelete", name, "/f"], {},
+      function (error, stdout, stderr){
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
+        if (stderr) return callback(new Error(stderr), false);
+        if (error) return callback(error, false);
+        callback(undefined, true);
       }
     );
   };
@@ -144,5 +166,16 @@ module.exports.create = function(req, res, next, args) {
   DnsCmd.Create(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
     return res.json(records);
+  });
+};
+
+/**
+  * Delete Zone
+  */
+module.exports.delete = function(req, res, next, args) {
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  DnsCmd.Delete(req.body['zone'], function(error, deleted){
+    if (error) return res.status(500).end(error.message);
+    return res.json({deleted: deleted});
   });
 };
