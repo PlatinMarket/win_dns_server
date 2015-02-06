@@ -7,6 +7,14 @@ var DnsCmd = new (function DnsCmd(){
       notFound = "DNS_ERROR_ZONE_DOES_NOT_EXIST";
 
   /**
+    * Test Whole Object
+    */
+  this.Test = function(callback){
+    if (!require('fs').existsSync(dnscmd)) return callback(new Error("Executer (dnscmd.exe) not found!"));
+    return callback(true);
+  };
+
+  /**
     * List Of Zones
     *
     * @return Error, array<ZoneName>
@@ -91,8 +99,10 @@ var DnsCmd = new (function DnsCmd(){
   * Check Dns Service Command
   */
 module.exports._before = function(req, res, next, args) {
-  if (!require('fs').existsSync(dnscmd)) return res.status(500).end("Executer (dnscmd.exe) not found!");
-  next();
+  DnsCmd.Test(function(error){
+    if (error instanceof Error) return res.status(500).end(error.message);
+    next();
+  });
 };
 
 /**
