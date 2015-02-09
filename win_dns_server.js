@@ -124,12 +124,38 @@ var DnsCmd = new (function DnsCmd(){
     );
   };
 
+  /**
+    * Create Record for Read Only
+    *
+    * @param type string
+    * @param data object
+    * @return Error, object<Record>
+    */
+  this.CreateRecord = function(type, data){
+    if (!type) return new Error("Record type required");
+    if (!data || typeof data != "object") return new Error("Record data required");
+    type = type.toUpperCase();
+    if ((Object.keys(this.RecordTypes)).indexOf(type) == -1) return new Error("Type '" + type + "' not found");
+    var _Record = new this.RecordTypes[type]();
+    for (var key in data) if (_Record.hasOwnProperty(key.toLowerCase())) _Record[key.toLowerCase()] = data[key.toLowerCase()];
+    var _Result = _Record.validate();
+    if (_Result === true) return _Record;
+    return _Result;
+  };
+
+  /**
+    * DNS Record Type Object
+    * contains min. required types and validations
+    */
   this.RecordTypes = {
     "A": function A(){
       this.name = null;
       this.ip = null;
       this.ttl = null;
       this.validate = function(){
+        if (!ValidateIPaddress(this.ip)) return new Error("IPv4 Address '" + this.ip + "' not validated");
+        if (!ValidateString(this.name)) return new Error("Name '" + this.name + "' not validated");
+        if (typeof this.ttl != "number" || this.ttl != null) this.ttl = null;
         return true;
       };
     },
@@ -200,17 +226,15 @@ var DnsCmd = new (function DnsCmd(){
     }
   };
 
-  this.CreateRecord = function(type, data){
-    if (!type) return new Error("Record type required");
-    if (!data || typeof data != "object") return new Error("Record data required");
-    type = type.toUpperCase();
-    if ((Object.keys(this.RecordTypes)).indexOf(type) == -1) return new Error("Type '" + type + "' not found");
-    var _Record = new this.RecordTypes[type]();
-    for (var key in data) _Record[key.toLowerCase()] = data[key.toLowerCase()];
-    var _Result = _Record.validate();
-    if (_Result === true) return _Record;
-    return _Result;
-  };
+  /** Validation Helpers **/
+  function ValidateIPaddress(ipaddress) {
+    return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress);
+  }
+  function ValidateString(input) {
+    if (typeof input != "string") return false;
+    if (input == null) return false;
+    return input.replace(/\s/g, '').length < 1;
+  }
 
 });
 
