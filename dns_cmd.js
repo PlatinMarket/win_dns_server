@@ -2,7 +2,7 @@
 /**
   * DnsCmd Controller Object
   */
-var DnsCmd = new (function DnsCmd(){
+function DnsCmd() {
   var dnscmd = "C:\\Windows\\System32\\dnscmd.exe",
       filter = ['TrustAnchors'];
 
@@ -12,7 +12,7 @@ var DnsCmd = new (function DnsCmd(){
   };
 
   /**
-    * Test Whole Object
+    * Test Case
     */
   this.Test = function(callback){
     if (!require('fs').existsSync(dnscmd)) return callback(new Error("Executer (dnscmd.exe) not found!"));
@@ -238,7 +238,7 @@ var DnsCmd = new (function DnsCmd(){
     return input.replace(/\s/g, '').length > 0;
   }
 
-});
+}
 
 /** Exports to Module **/
 module.exports = new DnsCmd();
