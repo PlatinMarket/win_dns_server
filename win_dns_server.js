@@ -292,7 +292,7 @@ module.exports.record_add = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('type')) return res.status(400).end('Type require');
 
   var Record = DnsCmd.CreateRecord(req.body.type, req.body);
-  if (Record instanceof Error) return res.status(500).end(Record.message + "\r\n" + Record.stack);
+  if (Record instanceof Error) return res.status(500).end(Record.message);
 
   return res.json(Record);
 };
