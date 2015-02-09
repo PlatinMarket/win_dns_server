@@ -65,7 +65,7 @@ module.exports.record_add = function(req, res, next, args) {
   * Delete Zone
   */
 module.exports.delete = function(req, res, next, args) {
-  res.status(200).end('Not Allowed');
+  //res.status(200).end('Not Allowed');
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
   DnsCmd.Delete(req.body['zone'], function(error, deleted){
     if (error) return res.status(500).end(error.message);
