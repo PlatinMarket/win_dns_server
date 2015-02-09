@@ -169,7 +169,7 @@ function DnsCmd() {
         if (!ValidateIPaddress(this.ip, true)) return new Error(this.constructor.name + " Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
-        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);  
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);
         return true;
       };
     },
@@ -242,20 +242,26 @@ function DnsCmd() {
     return /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/.test(ipaddress);
   }
 
-  /** String IsNullOrWhiteSpace */
+  /** 
+    * String IsNullOrWhiteSpace
+    */
   function ValidateString(input) {
     if (typeof input != "string") return false;
     if (input == null) return false;
     return input.replace(/\s/g, '').length > 0;
   }
 
-  /** String Hostname */
+  /**
+    * String Hostname
+    */
   function ValidateHostname(input) {
     if (!ValidateString(input)) return false;
-    return /^[a-zA-Z0-9]$|^[a-zA-Z0-9][a-zA-Z0-9]$|^[a-zA-Z0-9_][a-zA-Z0-9.-]+[a-zA-Z0-9_]$/.test(input);
+    return /^[a-zA-Z0-9_]$|^[a-zA-Z0-9_][a-zA-Z0-9_]$|^[a-zA-Z0-9_][a-zA-Z0-9_.-]+[a-zA-Z0-9_]$/.test(input);
   }
 
-  /** String Number */
+  /**
+    * String Number
+    */
   function ValidateNumber(input, min, max) {
     if (!ValidateString(input) || !/^\d+$/.test(input)) return false;
     input = parseInt(input, 10);
