@@ -157,6 +157,7 @@ function DnsCmd() {
         if (!ValidateIPaddress(this.ip)) return new Error(this.constructor.name + " Record IPv4 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated"); else this.ttl = null;
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);
         return true;
       };
     },
