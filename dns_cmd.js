@@ -167,7 +167,8 @@ function DnsCmd() {
       this.validate = function(){
         if (!ValidateIPaddress(this.ip, true)) return new Error("AAAA Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error("AAAA Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
-        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error("AAAA TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated"); else this.ttl = null;
+        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error("AAAA TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);
         return true;
       };
     },
@@ -257,8 +258,8 @@ function DnsCmd() {
   function ValidateNumber(input, min, max) {
     if (!ValidateString(input) || !/^\d+$/.test(input)) return false;
     input = parseInt(input, 10);
-    if (typeof min == "number") if (input <= min) return false;
-    if (typeof max == "number") if (input >= max) return false;
+    if (typeof min == "number") if (input < min) return false;
+    if (typeof max == "number") if (input > max) return false;
     return true;
   }
 
