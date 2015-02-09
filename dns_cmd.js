@@ -216,7 +216,12 @@ function DnsCmd() {
     "CNAME": function CNAME(){
       this.name = null;
       this.alias = null;
+      this.ttl = null;
       this.validate = function(){
+        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateFQDN(this.alias)) return new Error(this.constructor.name + " Record FQDN(alias)" + (ValidateString(this.alias) ? " '" + this.alias + "' " : " ") + "not validated");
+        if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
     },
@@ -236,6 +241,10 @@ function DnsCmd() {
       this.txt = null;
       this.ttl = null;
       this.validate = function(){
+        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateString(this.txt)) return new Error(this.constructor.name + " Record Name(txt)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
     }
