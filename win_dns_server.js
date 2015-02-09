@@ -240,7 +240,7 @@ module.exports.index = function(req, res, next, args) {
 module.exports.read = function(req, res, next, args) {
   if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
   var type = req.body.hasOwnProperty('type') ? req.body['type'].toUpperCase() : undefined;
-  if (type && (Object.keys(DnsCmd.RecordTypes)).indexOf(req.body['type'].toUpperCase())) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
+  if (type && (Object.keys(DnsCmd.RecordTypes)).indexOf(req.body['type'].toUpperCase()) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
   DnsCmd.Records(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
     if (type && records.hasOwnProperty(type.toLocaleLowerCase())) return res.json(records[type.toLocaleLowerCase()]);
