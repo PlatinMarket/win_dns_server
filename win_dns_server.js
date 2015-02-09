@@ -1,6 +1,6 @@
 
 /** Depencies **/
-var DnsCmd = require(global.path('/rpc_modules/win_dns_server/dns_cmd.js'));
+var DnsCmd = global.requireCached(global.path('/rpc_modules/win_dns_server/dns_cmd.js'));
 
 /**
   * Check Dns Service Command
