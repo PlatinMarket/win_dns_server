@@ -169,7 +169,7 @@ function DnsCmd() {
         if (!ValidateIPaddress(this.ip, true)) return new Error(this.constructor.name + " Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
-        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);  
         return true;
       };
     },
@@ -252,7 +252,7 @@ function DnsCmd() {
   /** String Hostname */
   function ValidateHostname(input) {
     if (!ValidateString(input)) return false;
-    return /^[a-zA-Z0-9][a-zA-Z0-9.-]+[a-zA-Z0-9]$/.test(input);
+    return /^[a-zA-Z0-9]$|^[a-zA-Z0-9][a-zA-Z0-9]$|^[a-zA-Z0-9_][a-zA-Z0-9.-]+[a-zA-Z0-9_]$/.test(input);
   }
 
   /** String Number */
