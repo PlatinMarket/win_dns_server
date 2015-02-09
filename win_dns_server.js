@@ -156,6 +156,7 @@ var DnsCmd = new (function DnsCmd(){
         if (!ValidateIPaddress(this.ip)) return new Error("A Record IPv4 Address '" + this.ip + "' not validated");
         if (!ValidateString(this.name)) return new Error("A Record Name '" + this.name + "' not validated");
         if (ValidateString(this.ttl) && parseInt(this.ttl, 10).toString() === this.ttl) this.ttl = parseInt(this.ttl, 10);
+        if (typeof this.ttl != "number") this.ttl = null;
         return true;
       };
     },
