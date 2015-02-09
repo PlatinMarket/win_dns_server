@@ -154,9 +154,9 @@ function DnsCmd() {
       this.ip = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateIPaddress(this.ip)) return new Error("A Record IPv4 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
-        if (!ValidateHostname(this.name)) return new Error("A Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
-        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error("AAAA TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated"); else this.ttl = null;
+        if (!ValidateIPaddress(this.ip)) return new Error(this.constructor.name + " Record IPv4 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
+        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated"); else this.ttl = null;
         return true;
       };
     },
@@ -165,9 +165,9 @@ function DnsCmd() {
       this.ip = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateIPaddress(this.ip, true)) return new Error("AAAA Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
-        if (!ValidateHostname(this.name)) return new Error("AAAA Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
-        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error("AAAA TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (!ValidateIPaddress(this.ip, true)) return new Error(this.constructor.name + " Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
+        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (ValidateString(this.ttl) && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10);
         return true;
       };
