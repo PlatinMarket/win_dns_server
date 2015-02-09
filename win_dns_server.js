@@ -233,7 +233,7 @@ var DnsCmd = new (function DnsCmd(){
   function ValidateString(input) {
     if (typeof input != "string") return false;
     if (input == null) return false;
-    return input.replace(/\s/g, '').length < 1;
+    return input.replace(/\s/g, '').length > 0;
   }
 
 });
