@@ -256,6 +256,7 @@ function DnsCmd() {
     */
   function ValidateHostname(input) {
     if (!ValidateString(input)) return false;
+    if (input === "@") return true;
     return /^(([a-zA-Z0-9_]|[a-zA-Z0-9_][a-zA-Z0-9_\-]*[a-zA-Z0-9_])\.)*([A-Za-z0-9_]|[A-Za-z0-9_][A-Za-z0-9_\-]*[A-Za-z0-9_])$/.test(input);
   }
 
