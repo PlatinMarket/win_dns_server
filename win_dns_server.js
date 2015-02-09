@@ -1,6 +1,3 @@
-
-var types = ['SOA', 'NS', 'MX', 'A', 'AAAA', 'TXT', 'SRV', 'CNAME'];
-
 /**
   * DnsCmd Controller
   */
@@ -127,6 +124,94 @@ var DnsCmd = new (function DnsCmd(){
     );
   };
 
+  this.RecordTypes = {
+    "A": function A(){
+      this.name = null;
+      this.ip = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "AAAA": function AAAA(){
+      this.name = null;
+      this.ip = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "NS": function NS(){
+      this.name = null;
+      this.host = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "SOA": function SOA(){
+      this.name = null;
+      this.minimum = null;
+      this.expire = null;
+      this.retry = null;
+      this.refresh = null;
+      this.serial = null;
+      this.rname = null;
+      this.mname = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "MX": function MX(){
+      this.name = null;
+      this.preference = null;
+      this.host = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "CNAME": function CNAME(){
+      this.name = null;
+      this.alias = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "SRV": function SRV(){
+      this.name = null;
+      this.target = null;
+      this.priority = null;
+      this.weight = null;
+      this.port = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    },
+    "TXT": function TXT(){
+      this.name = null;
+      this.txt = null;
+      this.ttl = null;
+      this.validate = function(){
+        return true;
+      };
+    }
+  };
+
+  this.CreateRecord = function(type, data){
+    if (!type) return new Error("Record type required");
+    if (!data || typeof data != "object") return new Error("Record data required");
+    type = type.toUpperCase();
+    if ((Object.keys(this.RecordTypes)).indexOf(type) == -1) return new Error("Type '" + type + "' not found");
+    var _Record = new this.RecordTypes[type]();
+    for (var key in data) _Record[key.toLowerCase()] = data[key.toLowerCase()];
+    var _Result = _Record.validate();
+    if (_Result === true) return _Record;
+    return _Result;
+  };
+
 });
 
 /**
@@ -153,9 +238,9 @@ module.exports.index = function(req, res, next, args) {
   * Get Zone Info
   */
 module.exports.read = function(req, res, next, args) {
-  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
   var type = req.body.hasOwnProperty('type') ? req.body['type'].toUpperCase() : undefined;
-  if (type && types.indexOf(req.body['type'].toUpperCase()) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
+  if (type && (Object.keys(DnsCmd.RecordTypes)).indexOf(req.body['type'].toUpperCase())) == -1) return res.status(400).end('Unsupported type \'' + type + '\'');
   DnsCmd.Records(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
     if (type && records.hasOwnProperty(type.toLocaleLowerCase())) return res.json(records[type.toLocaleLowerCase()]);
@@ -165,10 +250,10 @@ module.exports.read = function(req, res, next, args) {
 };
 
 /**
-  * Create Zone New Zone
+  * Create New Zone
   */
 module.exports.create = function(req, res, next, args) {
-  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
   DnsCmd.Create(req.body['zone'], function(error, records){
     if (error) return res.status(500).end(error.message);
     return res.json(records);
@@ -176,11 +261,24 @@ module.exports.create = function(req, res, next, args) {
 };
 
 /**
+  * Create New Zone Record
+  */
+module.exports.record_add = function(req, res, next, args) {
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
+  if (!req.body.hasOwnProperty('type')) return res.status(400).end('Type require');
+
+  var Record = DnsCmd.CreateRecord(req.body.type, req.body);
+  if (Record instanceof Error) return res.status(500).end(Record.message + "\r\n" + Record.stack);
+
+  return res.json(Record);
+};
+
+/**
   * Delete Zone
   */
 module.exports.delete = function(req, res, next, args) {
   res.status(200).end('Not Allowed');
-  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone excepted');
+  if (!req.body.hasOwnProperty('zone')) return res.status(400).end('Zone require');
   DnsCmd.Delete(req.body['zone'], function(error, deleted){
     if (error) return res.status(500).end(error.message);
     return res.json({deleted: deleted});
