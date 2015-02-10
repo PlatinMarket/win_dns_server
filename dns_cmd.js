@@ -10,7 +10,9 @@ function DnsCmd() {
 
   var STDERR = {
     "ZONE_EXISTS": "DNS_ERROR_ZONE_ALREADY_EXISTS",
-    "NOT_FOUND": "DNS_ERROR_ZONE_DOES_NOT_EXIST"
+    "NOT_FOUND": "DNS_ERROR_ZONE_DOES_NOT_EXIST",
+    "INVALID_PARAMETER": "ERROR_INVALID_PARAMETER",
+    "RECORD_EXISTS": "DNS_ERROR_RECORD_ALREADY_EXISTS"
   };
 
   /**
@@ -147,6 +149,28 @@ function DnsCmd() {
   };
 
   /**
+    * Create Record for Read Only
+    *
+    * @param type string
+    * @param data object
+    * @return Error, object<Record>
+    */
+  this.RecordAdd = function(name, record, callback){
+    var _dnsCmd = this;
+    var args = (["/RecordAdd", name]).concat(record.toArgs());
+    global.execute(dnscmd, args, {},
+      function (error, stdout, stderr){
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
+        if (stdout && stdout.indexOf(STDERR.INVALID_PARAMETER) > 0) return callback(new Error("Invalid parameter\r\ndnscmd.exe " + args.join(" ")), false);
+        if (stdout && stdout.indexOf(STDERR.RECORD_EXISTS) > 0) return callback(new Error("Record already exists"), false);
+        if (stderr) return callback(new Error(stderr), false);
+        if (error) return callback(error, false);
+        callback(undefined, true);
+      }
+    );
+  };
+
+  /**
     * DNS Record Type Object
     * contains min. required types and validations
     */
@@ -162,6 +186,12 @@ function DnsCmd() {
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.ip]);
+        return args;
+      };
     },
     "AAAA": function AAAA(){
       this.name = null;
@@ -174,6 +204,12 @@ function DnsCmd() {
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.ip]);
+        return args;
+      };
     },
     "NS": function NS(){
       this.name = null;
@@ -185,6 +221,12 @@ function DnsCmd() {
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
+      };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.host]);
+        return args;
       };
     },
     "SOA": function SOA(){
@@ -210,6 +252,12 @@ function DnsCmd() {
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.rname, this.mname, this.serial, this.refresh, this.retry, this.expire, this.minimum]);
+        return args;
+      };
     },
     "MX": function MX(){
       this.name = null;
@@ -224,6 +272,12 @@ function DnsCmd() {
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.preference, this.host]);
+        return args;
+      };
     },
     "CNAME": function CNAME(){
       this.name = null;
@@ -235,6 +289,12 @@ function DnsCmd() {
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
+      };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.alias]);
+        return args;
       };
     },
     "SRV": function SRV(){
@@ -254,17 +314,29 @@ function DnsCmd() {
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.priority, this.weight, this.port, this.target]);
+        return args;
+      };
     },
     "TXT": function TXT(){
       this.name = null;
       this.txt = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateHostname(this.name) && this.target != "@") return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (!ValidateString(this.txt)) return new Error(this.constructor.name + " Record Name(txt)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
+      };
+      this.toArgs = function(){
+        var args = [this.name];
+        if (this.ttl != null) args.push(this.ttl);
+        args = args.concat([this.constructor.name, this.txt]);
+        return args;
       };
     }
   };

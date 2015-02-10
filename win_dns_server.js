@@ -58,7 +58,10 @@ module.exports.record_add = function(req, res, next, args) {
   var Record = DnsCmd.CreateRecord(req.body.type, req.body);
   if (Record instanceof Error) return res.status(400).end(Record.message);
 
-  return res.json(Record);
+  DnsCmd.RecordAdd(req.body['zone'], Record, function(error, result){
+    if (error) return res.status(500).end(error.message);
+    return res.json(Record);
+  });
 };
 
 /**
