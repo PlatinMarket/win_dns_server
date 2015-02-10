@@ -12,7 +12,9 @@ function DnsCmd() {
     "ZONE_EXISTS": "DNS_ERROR_ZONE_ALREADY_EXISTS",
     "NOT_FOUND": "DNS_ERROR_ZONE_DOES_NOT_EXIST",
     "INVALID_PARAMETER": "ERROR_INVALID_PARAMETER",
-    "RECORD_EXISTS": "DNS_ERROR_RECORD_ALREADY_EXISTS"
+    "RECORD_EXISTS": "DNS_ERROR_RECORD_ALREADY_EXISTS",
+    "CNAME_EXISTS": "DNS_ERROR_CNAME_COLLISION",
+    "ONLY_ROOT": "DNS_ERROR_RECORD_ONLY_AT_ZONE_ROOT"
   };
 
   /**
@@ -163,6 +165,8 @@ function DnsCmd() {
         if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
         if (stdout && stdout.indexOf(STDERR.INVALID_PARAMETER) > 0) return callback(new Error("Invalid parameter\r\ndnscmd.exe " + args.join(" ")), false);
         if (stdout && stdout.indexOf(STDERR.RECORD_EXISTS) > 0) return callback(new Error("Record already exists"), false);
+        if (stdout && stdout.indexOf(STDERR.CNAME_EXISTS) > 0) return callback(new Error("CNAME '" + record.name + "' already exists"), false);
+        if (stdout && stdout.indexOf(STDERR.ONLY_ROOT) > 0) return callback(new Error("Record '" + record.constructor.name + "' allow only root zone"), false);
         if (stderr) return callback(new Error(stderr + "\r\ndnscmd.exe " + args.join(" ")), false);
         if (error) return callback(new Error(error.message + "\r\ndnscmd.exe " + args.join(" ")), false);
         callback(undefined, true);
