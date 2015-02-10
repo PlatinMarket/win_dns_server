@@ -236,7 +236,7 @@ function DnsCmd() {
       this.ttl = null;
       this.validate = function(){
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
-        if (!ValidateFQDN(this.target)) return new Error(this.constructor.name + " Record FQDN(target)" + (ValidateString(this.target) ? " '" + this.target + "' " : " ") + "not validated");
+        if (!ValidateFQDN(this.target) && this.target != "@") return new Error(this.constructor.name + " Record FQDN(target)" + (ValidateString(this.target) ? " '" + this.target + "' " : " ") + "not validated");
         if (!ValidateNumber(this.priority, 0, 65535)) return new Error(this.constructor.name + " Record Priority(priority)" + (ValidateString(this.priority) ? " '" + this.priority + "' " : " ") + "not validated"); else this.priority = parseInt(this.priority, 10);
         if (!ValidateNumber(this.weight, 0, 65535)) return new Error(this.constructor.name + " Record Weight(weight)" + (ValidateString(this.weight) ? " '" + this.weight + "' " : " ") + "not validated"); else this.weight = parseInt(this.weight, 10);
         if (!ValidateNumber(this.port, 1, 65535)) return new Error(this.constructor.name + " Record Port(port)" + (ValidateString(this.port) ? " '" + this.port + "' " : " ") + "not validated"); else this.port = parseInt(this.port, 10);
