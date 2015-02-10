@@ -198,6 +198,16 @@ function DnsCmd() {
       this.mname = null;
       this.ttl = null;
       this.validate = function(){
+        this.name = "@";
+        if (!ValidateFQDN(this.rname)) return new Error(this.constructor.name + " Record FQDN(rname)" + (ValidateString(this.rname) ? " '" + this.rname + "' " : " ") + "not validated");
+        if (!ValidateFQDN(this.mname)) return new Error(this.constructor.name + " Record FQDN(mname)" + (ValidateString(this.mname) ? " '" + this.mname + "' " : " ") + "not validated");
+        if (!ValidateNumber(this.minimum, 0, 2147483647)) return new Error(this.constructor.name + " Record Minimum(minimum)" + (ValidateString(this.minimum) ? " '" + this.minimum + "' " : " ") + "not validated"); else this.minimum = parseInt(this.minimum, 10);
+        if (!ValidateNumber(this.expire, 0, 2147483647)) return new Error(this.constructor.name + " Record Expire(expire)" + (ValidateString(this.expire) ? " '" + this.expire + "' " : " ") + "not validated"); else this.expire = parseInt(this.expire, 10);
+        if (!ValidateNumber(this.retry, 0, 2147483647)) return new Error(this.constructor.name + " Record Retry(retry)" + (ValidateString(this.retry) ? " '" + this.retry + "' " : " ") + "not validated"); else this.retry = parseInt(this.retry, 10);
+        if (!ValidateNumber(this.refresh, 0, 2147483647)) return new Error(this.constructor.name + " Record Refresh(refresh)" + (ValidateString(this.refresh) ? " '" + this.refresh + "' " : " ") + "not validated"); else this.refresh = parseInt(this.refresh, 10);
+        if (!ValidateNumber(this.serial, 0, 2147483647)) return new Error(this.constructor.name + " Record Serial(serial)" + (ValidateString(this.serial) ? " '" + this.serial + "' " : " ") + "not validated"); else this.serial = parseInt(this.serial, 10);
+        if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
     },
