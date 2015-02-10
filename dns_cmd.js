@@ -139,14 +139,15 @@ function DnsCmd() {
     * @return Error, object<Record>
     */
   this.CreateRecord = function(type, data){
-    if (!type) return new Error("Record type required");
-    if (!data || typeof data != "object") return new Error("Record data required");
+    if (!type) return global.error("Record type required", 400);
+    if (!data || typeof data != "object") return global.error("Record data required", 400);
     type = type.toUpperCase();
-    if ((Object.keys(this.RecordTypes)).indexOf(type) == -1) return new Error("Type '" + type + "' not found");
+    if ((Object.keys(this.RecordTypes)).indexOf(type) == -1) return global.error("Type '" + type + "' not found", 404);
     var _Record = new this.RecordTypes[type]();
     for (var key in data) if (_Record.hasOwnProperty(key.toLowerCase())) _Record[key.toLowerCase()] = data[key.toLowerCase()];
     var _Result = _Record.validate();
     if (_Result === true) return _Record;
+    _Result.code = 400;
     return _Result;
   };
 
@@ -162,11 +163,11 @@ function DnsCmd() {
     var args = (["/RecordAdd", name]).concat(record.toArgs());
     global.execute(dnscmd, args, {},
       function (error, stdout, stderr){
-        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
-        if (stdout && stdout.indexOf(STDERR.INVALID_PARAMETER) > 0) return callback(new Error("Invalid parameter\r\ndnscmd.exe " + args.join(" ")), false);
-        if (stdout && stdout.indexOf(STDERR.RECORD_EXISTS) > 0) return callback(new Error("Record already exists"), false);
-        if (stdout && stdout.indexOf(STDERR.CNAME_EXISTS) > 0) return callback(new Error("CNAME '" + record.name + "' already exists"), false);
-        if (stdout && stdout.indexOf(STDERR.ONLY_ROOT) > 0) return callback(new Error("Record '" + record.constructor.name + "' allow only root zone"), false);
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(global.error("Zone '" + name + "' not found!", 404), false);
+        if (stdout && stdout.indexOf(STDERR.INVALID_PARAMETER) > 0) return callback(global.error("Invalid parameter\r\ndnscmd.exe " + args.join(" "), 400), false);
+        if (stdout && stdout.indexOf(STDERR.RECORD_EXISTS) > 0) return callback(global.error("Record already exists", 400), false);
+        if (stdout && stdout.indexOf(STDERR.CNAME_EXISTS) > 0) return callback(global.error("CNAME '" + record.name + "' already exists", 400), false);
+        if (stdout && stdout.indexOf(STDERR.ONLY_ROOT) > 0) return callback(global.error("Record '" + record.constructor.name + "' allow only root zone", 400), false);
         if (stderr) return callback(new Error(stderr + "\r\ndnscmd.exe " + args.join(" ")), false);
         if (error) return callback(new Error(error.message + "\r\ndnscmd.exe " + args.join(" ")), false);
         callback(undefined, true);
