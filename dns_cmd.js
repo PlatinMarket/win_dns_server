@@ -163,8 +163,8 @@ function DnsCmd() {
         if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
         if (stdout && stdout.indexOf(STDERR.INVALID_PARAMETER) > 0) return callback(new Error("Invalid parameter\r\ndnscmd.exe " + args.join(" ")), false);
         if (stdout && stdout.indexOf(STDERR.RECORD_EXISTS) > 0) return callback(new Error("Record already exists"), false);
-        if (stderr) return callback(new Error(stderr), false);
-        if (error) return callback(error, false);
+        if (stderr) return callback(new Error(stderr + "\r\ndnscmd.exe " + args.join(" ")), false);
+        if (error) return callback(new Error(error.message + "\r\ndnscmd.exe " + args.join(" ")), false);
         callback(undefined, true);
       }
     );
