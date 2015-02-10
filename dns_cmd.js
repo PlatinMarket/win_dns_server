@@ -209,7 +209,7 @@ function DnsCmd() {
       this.validate = function(){
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (!ValidateFQDN(this.host)) return new Error(this.constructor.name + " Record FQDN(host)" + (ValidateString(this.host) ? " '" + this.host + "' " : " ") + "not validated");
-        if (!ValidateNumber(this.preference, 0, 2147483647)) return new Error(this.constructor.name + " Record Order(preference)" + (ValidateString(this.preference) ? " '" + this.preference + "' " : " ") + "not validated"); else this.preference = parseInt(this.preference, 10);
+        if (!ValidateNumber(this.preference, 0, 65535)) return new Error(this.constructor.name + " Record Order(preference)" + (ValidateString(this.preference) ? " '" + this.preference + "' " : " ") + "not validated"); else this.preference = parseInt(this.preference, 10);
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
@@ -235,6 +235,13 @@ function DnsCmd() {
       this.port = null;
       this.ttl = null;
       this.validate = function(){
+        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateFQDN(this.target)) return new Error(this.constructor.name + " Record FQDN(target)" + (ValidateString(this.target) ? " '" + this.target + "' " : " ") + "not validated");
+        if (!ValidateNumber(this.priority, 0, 65535)) return new Error(this.constructor.name + " Record Priority(priority)" + (ValidateString(this.priority) ? " '" + this.priority + "' " : " ") + "not validated"); else this.priority = parseInt(this.priority, 10);
+        if (!ValidateNumber(this.weight, 0, 65535)) return new Error(this.constructor.name + " Record Weight(weight)" + (ValidateString(this.weight) ? " '" + this.weight + "' " : " ") + "not validated"); else this.weight = parseInt(this.weight, 10);
+        if (!ValidateNumber(this.port, 1, 65535)) return new Error(this.constructor.name + " Record Port(port)" + (ValidateString(this.port) ? " '" + this.port + "' " : " ") + "not validated"); else this.port = parseInt(this.port, 10);
+        if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
+        if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
       };
     },
