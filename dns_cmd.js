@@ -156,7 +156,7 @@ function DnsCmd() {
       this.ip = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateIPaddress(this.ip)) return new Error(this.constructor.name + " Record IPv4 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
+        if (!ValidateIPaddress(this.ip) && this.target != "@") return new Error(this.constructor.name + " Record IPv4 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
@@ -168,7 +168,7 @@ function DnsCmd() {
       this.ip = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateIPaddress(this.ip, true)) return new Error(this.constructor.name + " Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
+        if (!ValidateIPaddress(this.ip, true) && this.target != "@") return new Error(this.constructor.name + " Record IPv6 Address(ip)" + (ValidateString(this.ip) ? " '" + this.ip + "' " : " ") + "not validated");
         if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
@@ -180,8 +180,8 @@ function DnsCmd() {
       this.host = null;
       this.ttl = null;
       this.validate = function(){
+        this.name = "@";
         if (!ValidateFQDN(this.host)) return new Error(this.constructor.name + " Record FQDN(host)" + (ValidateString(this.host) ? " '" + this.host + "' " : " ") + "not validated");
-        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
@@ -207,7 +207,7 @@ function DnsCmd() {
       this.host = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        this.name = "@";
         if (!ValidateFQDN(this.host)) return new Error(this.constructor.name + " Record FQDN(host)" + (ValidateString(this.host) ? " '" + this.host + "' " : " ") + "not validated");
         if (!ValidateNumber(this.preference, 0, 65535)) return new Error(this.constructor.name + " Record Order(preference)" + (ValidateString(this.preference) ? " '" + this.preference + "' " : " ") + "not validated"); else this.preference = parseInt(this.preference, 10);
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
@@ -220,7 +220,7 @@ function DnsCmd() {
       this.alias = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateHostname(this.name) && this.target != "@") return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (!ValidateFQDN(this.alias)) return new Error(this.constructor.name + " Record FQDN(alias)" + (ValidateString(this.alias) ? " '" + this.alias + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
@@ -235,7 +235,7 @@ function DnsCmd() {
       this.port = null;
       this.ttl = null;
       this.validate = function(){
-        if (!ValidateHostname(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateServicename(this.name)) return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
         if (!ValidateFQDN(this.target) && this.target != "@") return new Error(this.constructor.name + " Record FQDN(target)" + (ValidateString(this.target) ? " '" + this.target + "' " : " ") + "not validated");
         if (!ValidateNumber(this.priority, 0, 65535)) return new Error(this.constructor.name + " Record Priority(priority)" + (ValidateString(this.priority) ? " '" + this.priority + "' " : " ") + "not validated"); else this.priority = parseInt(this.priority, 10);
         if (!ValidateNumber(this.weight, 0, 65535)) return new Error(this.constructor.name + " Record Weight(weight)" + (ValidateString(this.weight) ? " '" + this.weight + "' " : " ") + "not validated"); else this.weight = parseInt(this.weight, 10);
@@ -284,8 +284,15 @@ function DnsCmd() {
     */
   function ValidateHostname(input) {
     if (!ValidateString(input)) return false;
-    if (input === "@") return true;
     return /^(([a-zA-Z0-9_]|[a-zA-Z0-9_][a-zA-Z0-9_\-]*[a-zA-Z0-9_])\.)*([A-Za-z0-9_]|[A-Za-z0-9_][A-Za-z0-9_\-]*[A-Za-z0-9_])$/.test(input);
+  }
+
+  /**
+    * String Servicename _service._protocol
+    */
+  function ValidateServicename(input) {
+    if (!ValidateString(input)) return false;
+    return /^[_][A-Za-z0-9]+[A-Za-z0-9]\.[_][A-Za-z0-9]+[A-Za-z0-9]$/.test(input);
   }
 
   /**
