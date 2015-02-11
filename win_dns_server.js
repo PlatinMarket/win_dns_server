@@ -1,6 +1,7 @@
 
 /** Depencies **/
-var DnsCmd = global.requireCached(global.path('/rpc_modules/win_dns_server/dns_cmd.js'));
+var DnsCmd = global.requireCached(global.path('/rpc_modules/win_dns_server/dns_cmd.js')),
+    PlatinToken = global.requireCached(global.path('/lib/platin-token.js'));
 
 /**
   * Check Dns Service Command
@@ -8,8 +9,12 @@ var DnsCmd = global.requireCached(global.path('/rpc_modules/win_dns_server/dns_c
 module.exports._before = function(req, res, next, args) {
   DnsCmd.Test(function(error){
     if (error instanceof Error) return res.status(500).end(error.message);
-    next();
+    PlatinToken.control(req, 'win_dns_server', function(error){
+      if (error instanceof Error) return res.parseError(error);
+      next();
+    });
   });
+
 };
 
 /**
