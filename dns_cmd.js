@@ -82,9 +82,7 @@ function DnsCmd() {
         if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
 
-        stdout = stdout.toString().replace(/\r\n\t\t/gi, "\r\n@");
         stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
-        stdout = stdout.toString().replace(/\r\n;/gi, ".\r\n;");
         stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
         stdout = stdout.toString().replace(/\r\n/gi, "\n");
         return callback(undefined, require(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
@@ -332,7 +330,7 @@ function DnsCmd() {
       this.ttl = null;
       this.validate = function(){
         if (!ValidateHostname(this.name) && this.name != "@") return new Error(this.constructor.name + " Record Name(name)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
-        if (!ValidateString(this.txt)) return new Error(this.constructor.name + " Record Name(txt)" + (ValidateString(this.name) ? " '" + this.name + "' " : " ") + "not validated");
+        if (!ValidateString(this.txt)) return new Error(this.constructor.name + " Record Name(txt)" + (ValidateString(this.txt) ? " '" + this.txt + "' " : " ") + "not validated");
         if (this.ttl != null && !ValidateNumber(this.ttl, 0, 2147483647)) return new Error(this.constructor.name + " TimeToLive(ttl)" + (ValidateString(this.ttl) ? " '" + this.ttl + "' " : " ") + "not validated");
         if (ValidateNumber(this.ttl)) this.ttl = parseInt(this.ttl, 10); else this.ttl = null;
         return true;
