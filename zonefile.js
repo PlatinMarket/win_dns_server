@@ -180,7 +180,7 @@
             } else if (uRR.indexOf(('Server:').toUpperCase()) === 3) {
                 ret.server = rr.split(/\s+/g)[2];
             } else if (uRR.indexOf(('Time:').toUpperCase()) === 3) {
-                ret.time = rr.split(/\s+/g)[2]);
+                ret.time = rr.split(/\s+/g)[2];
             } else if (uRR.indexOf(('Finished zone:').toUpperCase()) === 3) {
                 var totalStr = rr.replace(/([0-9]*)( nodes.*?)([0-9]*)( records.*?)([0-9]*)( seconds.*?)/gi, "$1-$3-$5");
                 ret.nodes = isNaN(parseInt(totalStr.split('-')[0], 10)) ? -1 : parseInt(totalStr.split('-')[0], 10);
