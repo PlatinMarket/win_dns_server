@@ -78,7 +78,7 @@ function DnsCmd() {
   this.Records = function(name, callback) {
     global.execute(dnscmd, ["/ZonePrint", name], {},
       function (error, stdout, stderr){
-        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), null);
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(global.error("Zone '" + name + "' not found!", 404), null);
         if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
 
@@ -103,7 +103,7 @@ function DnsCmd() {
     var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneAdd", name, "/Primary"], {},
       function (error, stdout, stderr){
-        if (stdout && stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(new Error("Zone '" + name + "' already exists"), undefined);
+        if (stdout && stdout.indexOf(STDERR.ZONE_EXISTS) > 0) return callback(global.error("Zone '" + name + "' already exists", 409), undefined);
         if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
 
@@ -123,7 +123,7 @@ function DnsCmd() {
     var _dnsCmd = this;
     global.execute(dnscmd, ["/ZoneDelete", name, "/f"], {},
       function (error, stdout, stderr){
-        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(new Error("Zone '" + name + "' not found!"), false);
+        if (stdout && stdout.indexOf(STDERR.NOT_FOUND) > 0) return callback(global.error("Zone '" + name + "' not found!", 404), false);
         if (stderr) return callback(new Error(stderr), false);
         if (error) return callback(error, false);
         callback(undefined, true);
