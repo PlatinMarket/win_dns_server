@@ -82,7 +82,7 @@ function DnsCmd() {
         if (stderr) return callback(new Error(stderr), undefined);
         if (error) return callback(error, undefined);
 
-        stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
+        //stdout = stdout.toString().replace(";  Zone:   ", "$ORIGIN");
         stdout = stdout.toString().replace(/(.*TXT\t\t)(.*?\r\n)/gi, "$1\"$2").replace(/(.*TXT\t\t.*)(.*?\r\n)/gi, "$1\"$2");
         stdout = stdout.toString().replace(/\r\n/gi, "\n");
         return callback(undefined, global.requireCached(global.path('/rpc_modules/win_dns_server/zonefile.js')).parse(stdout));
