@@ -212,8 +212,8 @@
 
     var parseSOA = function (rr) {
         var soa = {};
-        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var rrTokens = rr.trim().split(/\s+/g);
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         soa.name = root_name;
         soa.minimum = parseInt(rrTokens[l - 1], 10);
