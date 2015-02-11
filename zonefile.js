@@ -212,7 +212,7 @@
 
     var parseSOA = function (rr) {
         var soa = {};
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var rrTokens = rr.trim().split(/\s+/g);
         var l = rrTokens.length;
         soa.name = root_name;
@@ -229,7 +229,7 @@
 
     var parseNS = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -242,7 +242,7 @@
 
     var parseA = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -255,7 +255,7 @@
 
     var parseAAAA = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -268,7 +268,7 @@
 
     var parseCNAME = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -281,7 +281,7 @@
 
     var parseMX = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -295,7 +295,7 @@
 
     var parseTXT = function (rr) {
         var rrTokens = rr.trim().match(/[^\s\"']+|\"[^\"]*\"|'[^']*'/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -308,7 +308,7 @@
 
     var parsePTR = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
@@ -321,7 +321,7 @@
 
     var parseSRV = function (rr) {
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.trim().indexOf('\t\t ') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
           name: root_name,
