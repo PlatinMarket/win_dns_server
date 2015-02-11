@@ -211,11 +211,12 @@
     };
 
     var parseSOA = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var soa = {};
         var rrTokens = rr.trim().split(/\s+/g);
-        if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
+        if (rr.indexOf('\t\t') === -1) root_name = rrTokens[0];
         var l = rrTokens.length;
-        soa.name = root_name;
+        soa.name = rrTokens[0];
         soa.minimum = parseInt(rrTokens[l - 1], 10);
         soa.expire = parseInt(rrTokens[l - 2], 10);
         soa.retry = parseInt(rrTokens[l - 3], 10);
@@ -228,11 +229,12 @@
     };
 
     var parseNS = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           host: rrTokens[l - 1]
         };
 
@@ -241,11 +243,12 @@
     };
 
     var parseA = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           ip: rrTokens[l - 1]
         };
 
@@ -254,11 +257,12 @@
     };
 
     var parseAAAA = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           ip: rrTokens[l - 1]
         };
 
@@ -267,11 +271,12 @@
     };
 
     var parseCNAME = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           alias: rrTokens[l - 1]
         };
 
@@ -280,11 +285,12 @@
     };
 
     var parseMX = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           preference: parseInt(rrTokens[l - 2], 10),
           host: rrTokens[l - 1]
         };
@@ -294,11 +300,12 @@
     };
 
     var parseTXT = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().match(/[^\s\"']+|\"[^\"]*\"|'[^']*'/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           txt: rrTokens[l - 1].split('\"')[1]
         };
 
@@ -307,11 +314,12 @@
     };
 
     var parsePTR = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           host: rrTokens[l - 1]
         };
 
@@ -320,11 +328,12 @@
     };
 
     var parseSRV = function (rr) {
+        if (rr.indexOf('\t\t') === 0) rr = rr.replace('\t\t', root_name);
         var rrTokens = rr.trim().split(/\s+/g);
         if (rr.indexOf('\t\t') === 0) root_name = rrTokens[0];
         var l = rrTokens.length;
         var result = {
-          name: root_name,
+          name: rrTokens[0],
           target: rrTokens[l - 1],
           priority: parseInt(rrTokens[l - 4], 10),
           weight: parseInt(rrTokens[l - 3], 10),
