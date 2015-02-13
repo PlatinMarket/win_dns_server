@@ -1,7 +1,7 @@
 {
   "name": "win_dns_server",
   "description": "Remote Procedure Call Module",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "author": {
     "name": "Burak Doğan",
