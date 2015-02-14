@@ -177,8 +177,6 @@
       var uRR = rr.toUpperCase();
       if (uRR.indexOf(('Zone:').toUpperCase()) === 3) {
         ret.zone = rr.split(/\s+/g)[2];
-      } else if (uRR.indexOf(('Server:').toUpperCase()) === 3) {
-        ret.server = rr.split(/\s+/g)[2];
       } else if (/\s+SOA\s+/.test(uRR)) {
         ret.soa = parseSOA(rr);
       } else if (/\s+NS\s+/.test(uRR)) {
