@@ -179,11 +179,6 @@
         ret.zone = rr.split(/\s+/g)[2];
       } else if (uRR.indexOf(('Server:').toUpperCase()) === 3) {
         ret.server = rr.split(/\s+/g)[2];
-      } else if (uRR.indexOf(('Finished zone:').toUpperCase()) === 3) {
-        var totalStr = rr.slice(18).replace(/([0-9]*)( nodes.*?)([0-9]*)( records.*?)([0-9]*)( seconds.*?)/gi, "$1-$3-$5");
-        ret.nodes = isNaN(parseInt(totalStr.split('-')[0], 10)) ? -1 : parseInt(totalStr.split('-')[0], 10);
-        ret.records = isNaN(parseInt(totalStr.split('-')[1], 10)) ? -1 : parseInt(totalStr.split('-')[1], 10);
-        ret.seconds = isNaN(parseInt(totalStr.split('-')[2], 10)) ? -1 : parseInt(totalStr.split('-')[2], 10);
       } else if (/\s+SOA\s+/.test(uRR)) {
         ret.soa = parseSOA(rr);
       } else if (/\s+NS\s+/.test(uRR)) {
